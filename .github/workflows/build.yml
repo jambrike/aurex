@@ -12,10 +12,14 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Swift
-      uses: apple/setup-swift@v1
-      with:
-        swift-version: '5.9.2'
+    - name: Install Swift 5.10
+      run: |
+        wget https://download.swift.org/swift-5.10-release/ubuntu2204/swift-5.10-RELEASE/swift-5.10-RELEASE-ubuntu22.04.tar.gz
+        tar -xvzf swift-5.10-RELEASE-ubuntu22.04.tar.gz
+        echo "$GITHUB_WORKSPACE/swift-5.10-RELEASE-ubuntu22.04/usr/bin" >> $GITHUB_PATH
+
+    - name: Verify Swift install
+      run: swift --version
 
     - name: Build with SwiftPM
       run: swift build -c release
