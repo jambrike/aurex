@@ -1,29 +1,27 @@
-name: Build Aurex App
+name: Build Aurex CLI
 
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Xcode
-      run: sudo xcode-select -s /Applications/Xcode_15.2.app
+    - name: Set up Swift
+      uses: fwal/setup-swift@v1
+      with:
+        swift-version: '5.10'
 
-    - name: Build .ipa
-      run: |
-        xcodebuild -scheme Aurex -sdk iphoneos -configuration Release archive -archivePath ${{ github.workspace }}/Aurex.xcarchive
-        xcodebuild -exportArchive -archivePath ${{ github.workspace }}/Aurex.xcarchive -exportPath ${{ github.workspace }}/build -exportOptionsPlist ExportOptions.plist
+    - name: Build with SwiftPM
+      run: swift build -c release
 
-    - name: Upload .ipa Artifact
+    - name: Upload compiled binary
       uses: actions/upload-artifact@v4
       with:
-        name: Aurex-IPA
-        path: build/*.ipa
+        name: aurex-binary
+        path: .build/release/aurex
