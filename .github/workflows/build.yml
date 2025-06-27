@@ -1,0 +1,29 @@
+name: Build Aurex App
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Xcode
+      run: sudo xcode-select -s /Applications/Xcode_15.2.app
+
+    - name: Build .ipa
+      run: |
+        xcodebuild -scheme Aurex -sdk iphoneos -configuration Release archive -archivePath ${{ github.workspace }}/Aurex.xcarchive
+        xcodebuild -exportArchive -archivePath ${{ github.workspace }}/Aurex.xcarchive -exportPath ${{ github.workspace }}/build -exportOptionsPlist ExportOptions.plist
+
+    - name: Upload .ipa Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Aurex-IPA
+        path: build/*.ipa
