@@ -1,3 +1,9 @@
+name: Build Aurex CLI
+
+on:
+  push:
+    branches: [main]
+
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -9,7 +15,7 @@ jobs:
     - name: Set up Swift
       uses: apple/setup-swift@v1
       with:
-        swift-version: '5.10'
+        swift-version: '5.9.2'
 
     - name: Build with SwiftPM
       run: swift build -c release
@@ -19,4 +25,3 @@ jobs:
       with:
         name: aurex-binary
         path: .build/release/aurex
-
